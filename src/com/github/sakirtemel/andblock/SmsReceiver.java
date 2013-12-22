@@ -30,8 +30,8 @@ public class SmsReceiver extends BroadcastReceiver {
             msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
             message.append(msgs[i].getMessageBody());
         }
-        Toast.makeText(null, sender +  "  -  " + message, 2).show();
-    	
+        Toast.makeText(context, sender +  "  -  " + message, Toast.LENGTH_LONG).show();
+
         abortBroadcast();
     }   
 }
