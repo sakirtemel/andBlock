@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import android.os.Bundle;
 import android.app.Activity;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -57,13 +62,12 @@ public class MainActivity extends Activity {
 		
 		messagelist.add(map);
 		list=(ListView)findViewById(R.id.list);
-		
+		registerForContextMenu(list);
 		ListAdapter adapter = new SimpleAdapter(MainActivity.this, messagelist,
 				R.layout.list_v,
 				new String[] { TAG_NUMBER,TAG_TIME, TAG_MESSAGE }, new int[] {
 						R.id.vers,R.id.name, R.id.api});
 		
-		list.setAdapter(adapter);
 		list.setAdapter(adapter);
 		list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -76,6 +80,34 @@ public class MainActivity extends Activity {
         });
 		}
 		
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+	      super.onCreateContextMenu(menu, v, menuInfo);
+	      if (v.getId()==R.id.list) {
+	          MenuInflater inflater = getMenuInflater();
+	          inflater.inflate(R.menu.menu_list, menu);
+	      }
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+	      AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+	      int position = info.position; // listview item Position
+	      switch(item.getItemId()) {
+	         case R.id.add:
+	         // add stuff here	        	 
+	            return true;
+	          case R.id.edit:
+	            // edit stuff here
+	                return true;
+	          case R.id.delete:
+	        // remove stuff here
+	                return true;
+	          default:
+	                return super.onContextItemSelected(item);
+	      }
 	}
 
 	@Override
