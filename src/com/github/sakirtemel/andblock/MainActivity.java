@@ -10,8 +10,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -30,6 +33,10 @@ public class MainActivity extends Activity {
 	TextView number;
 	TextView time;
 	TextView message;
+	Button blocked;
+	Button unblocked;
+	ImageView image1;
+	ImageView image2;
 	
 	ArrayList<HashMap<String, String>> messagelist = new ArrayList<HashMap<String, String>>();
 	
@@ -43,13 +50,39 @@ public class MainActivity extends Activity {
 		 number = (TextView)findViewById(R.id.vers);
 		 time = (TextView)findViewById(R.id.name);
 		 message = (TextView)findViewById(R.id.api);
+		 blocked = (Button)findViewById(R.id.btnBlocked);
+		 unblocked = (Button)findViewById(R.id.btnUnblocked);
+		 image1 = (ImageView)findViewById(R.id.imageView3);
+		 image2 = (ImageView)findViewById(R.id.imageView4);
+		 
+		 blocked.setOnClickListener(new View.OnClickListener() {
+			    @Override
+			    public void onClick(View v) {
+			    	image1.setVisibility(View.VISIBLE);
+			    	image2.setVisibility(View.INVISIBLE);
+			    	String aStooges[] = {"05352372123", "11:22", "naber?","02134321", "dün", "jjýdwqlýsnaöjbwqjkbdsa"};
+			    	list1(aStooges);
+			    }
+			});
+		 
+		 unblocked.setOnClickListener(new View.OnClickListener() {
+			    @Override
+			    public void onClick(View v) {
+			    	image2.setVisibility(View.VISIBLE);
+			    	image1.setVisibility(View.INVISIBLE);
+			    	String aStooges[] = {"blocklanmamýs", "11:22", "naber?"}; 
+			    	list1(aStooges);
+			    }
+			});
+			
 		
+	}
 	
-		
-		String aStooges[] = {"05352372123", "11:22", "naber?","02134321", "dün", "jjýdwqlýsnaöjbwqjkbdsa"};
-		
+	public void list1(String aStooges[])
+	{
+		messagelist.clear();
 		for(int i = 0; i < aStooges.length; i++){
-		
+			
 			String number1 = aStooges[i].toString();
 			String time1 = aStooges[i+1].toString();
 			String message1 = aStooges[i+2].toString();
@@ -79,7 +112,6 @@ public class MainActivity extends Activity {
             }
         });
 		}
-		
 	}
 	
 	@Override
