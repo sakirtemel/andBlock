@@ -47,17 +47,13 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		
+		new DatabaseUpdater(this).update();
 		DatabaseHelper db = DatabaseHelper.getInstance(this);
 		 
         /**
          * CRUD Operations
          * */
-		System.out.println(db.isBlocked("123456"));
-		db.getAllNumbers();
-		db.updateDatabase(new String[]{"123456"});        // add Books
-		System.out.println(db.isBlocked("123456"));
-		db.getAllNumbers();
+		
 
 		
 		messagelist = new ArrayList<HashMap<String, String>>();

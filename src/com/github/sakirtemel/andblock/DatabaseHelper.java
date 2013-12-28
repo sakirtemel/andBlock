@@ -1,21 +1,25 @@
 package com.github.sakirtemel.andblock;
 
+import java.util.Formatter;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Base64;
 import android.util.Log;
-
 public class DatabaseHelper extends SQLiteOpenHelper { 
     private static DatabaseHelper mInstance = null;
 
     private static final String DATABASE_NAME = "databaseName";
     private static final String DATABASE_TABLE = "tableName";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 12;
 
     private Context mCxt;
     
@@ -57,10 +61,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_BOOK_TABLE);*/
         
         String CREATE_BLOCKED_NUMBERS_TABLE = "CREATE TABLE blocked_numbers ( " +
-                "number_hash INTEGER PRIMARY KEY " + 
+                "number_hash CHAR(80) PRIMARY KEY " + 
                 ");";
+        String CREATE_SETTINGS_TABLE = "CREATE TABLE settings ( " +
+                "last_updated CHAR(50) " + 
+                ");";
+        
  
         // create books table
+        db.execSQL(CREATE_SETTINGS_TABLE);
+        
+        db.execSQL("INSERT INTO settings (`last_updated`) VALUES('2011-08-21T18:02:52.249Z');");
+        
         db.execSQL(CREATE_BLOCKED_NUMBERS_TABLE);
 	}
 
@@ -69,7 +81,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		// TODO Auto-generated method stub
 		  // Drop older books table if existed
         /*db.execSQL("DROP TABLE IF EXISTS books");*/
+        db.execSQL("DROP TABLE IF EXISTS settings");
         db.execSQL("DROP TABLE IF EXISTS blocked_numbers");
+
 
         // create fresh books table
         this.onCreate(db);
@@ -216,8 +230,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     */
     /**/
+	
+	
+	private String sha1(String value) {
+		String key = "q4lf8A\"DC07NvRa";
+        try {
+            // Get an hmac_sha1 key from the raw key bytes
+            byte[] keyBytes = key.getBytes();           
+            SecretKeySpec signingKey = new SecretKeySpec(keyBytes, "HmacSHA1");
+
+            // Get an hmac_sha1 Mac instance and initialize with the signing key
+            Mac mac = Mac.getInstance("HmacSHA1");
+            mac.init(signingKey);
+
+            // Compute the hmac on input data bytes
+            byte[] rawHmac = mac.doFinal(value.getBytes());
+
+            return toHexString(rawHmac);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+	private static String toHexString(byte[] bytes) {
+		Formatter formatter = new Formatter();
+		
+		for (byte b : bytes) {
+			formatter.format("%02x", b);
+		}
+ 
+		return formatter.toString();
+	}
+	
+
+	
+	
     public boolean isBlocked(String number){
-    	String number_hash = number;
+    	Log.d("number", number);
+
+    	String number_hash = sha1(number);
+    	Log.d("hashed_number", number_hash);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = 
                 db.query("blocked_numbers", // a. table
@@ -277,6 +328,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
  
  
+    }
+    
+    
+    public void setLastUpdateDate(String last_updated) {
+    	 
+        // 1. get reference to writable DB
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE settings SET `last_updated` = '" + last_updated + "';";
+        db.execSQL(query);
+    }
+    public String getLastUpdatedDate() {
+    	 
+        // 1. build the query
+        String query = "SELECT last_updated FROM settings";
+ 
+        // 2. get reference to writable DB
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+ 
+        // 3. go over each row, build book and add it to list
+        if (cursor.moveToFirst()) {
+            	return cursor.getString(0);
+        }
+        return "2011-08-20T18:02:52.249Z";
     }
     
     /**/
