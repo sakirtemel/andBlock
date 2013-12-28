@@ -2,6 +2,8 @@ package com.github.sakirtemel.andblock;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.ContextMenu;
@@ -44,6 +46,19 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		
+		DatabaseHelper db = DatabaseHelper.getInstance(this);
+		 
+        /**
+         * CRUD Operations
+         * */
+		System.out.println(db.isBlocked("123456"));
+		db.getAllNumbers();
+		db.updateDatabase(new String[]{"123456"});        // add Books
+		System.out.println(db.isBlocked("123456"));
+		db.getAllNumbers();
+
 		
 		messagelist = new ArrayList<HashMap<String, String>>();
 		

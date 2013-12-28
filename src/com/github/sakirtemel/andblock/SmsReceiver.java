@@ -24,14 +24,20 @@ public class SmsReceiver extends BroadcastReceiver {
         msgs[0] = SmsMessage.createFromPdu((byte[])pdus[0]);
 
         String sender = msgs[0].getOriginatingAddress();
-        StringBuilder message = new StringBuilder(msgs[0].getMessageBody());
-
-        for (int i = 1; i < msgs.length; i++) {
-            msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
-            message.append(msgs[i].getMessageBody());
+        
+		DatabaseHelper db = DatabaseHelper.getInstance(context);
+       
+        if ( db.isBlocked(sender) ){
+        
+	        StringBuilder message = new StringBuilder(msgs[0].getMessageBody());
+	
+	        for (int i = 1; i < msgs.length; i++) {
+	            msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
+	            message.append(msgs[i].getMessageBody());
+	        }
+	        Toast.makeText(context, sender +  "  -  " + message, Toast.LENGTH_LONG).show();
+	
+	        abortBroadcast();
         }
-        Toast.makeText(context, sender +  "  -  " + message, Toast.LENGTH_LONG).show();
-
-        abortBroadcast();
     }   
 }
