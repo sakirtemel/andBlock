@@ -23,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "databaseName";
     private static final String DATABASE_TABLE = "tableName";
-    private static final int DATABASE_VERSION = 12;
+    private static final int DATABASE_VERSION = 13;
 
     private Context mCxt;
     
@@ -69,7 +69,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ");";
         String CREATE_BLOCKED_NUMBERS_TABLE1 = "CREATE TABLE blocked_messages ( " +
                 "number CHAR(80)" + 
-        		",message CHAR(80)" +
+        		",message VARCHAR(500)" +
         		",date CHAR(80)" +
                 ");";
         String CREATE_SETTINGS_TABLE = "CREATE TABLE settings ( " +
