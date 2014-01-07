@@ -1,5 +1,9 @@
 package com.github.sakirtemel.andblock;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Formatter;
 import java.util.LinkedList;
 import java.util.List;
@@ -63,17 +67,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String CREATE_BLOCKED_NUMBERS_TABLE = "CREATE TABLE blocked_numbers ( " +
                 "number_hash CHAR(80) PRIMARY KEY " + 
                 ");";
+        String CREATE_BLOCKED_NUMBERS_TABLE1 = "CREATE TABLE blocked_messages ( " +
+                "number CHAR(80)" + 
+        		",message CHAR(80)" +
+        		",date CHAR(80)" +
+                ");";
         String CREATE_SETTINGS_TABLE = "CREATE TABLE settings ( " +
                 "last_updated CHAR(50) " + 
                 ");";
-        
- 
         // create books table
         db.execSQL(CREATE_SETTINGS_TABLE);
         
         db.execSQL("INSERT INTO settings (`last_updated`) VALUES('2011-08-21T18:02:52.249Z');");
         
         db.execSQL(CREATE_BLOCKED_NUMBERS_TABLE);
+        
+        db.execSQL(CREATE_BLOCKED_NUMBERS_TABLE1);
 	}
 
 	@Override
@@ -294,7 +303,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         for(String number : numbers){
 	        ContentValues values = new ContentValues();
 	        values.put("number_hash", number); // get title 
-	 
 	        // 3. insert
 	        try{
 	        	db.insert("blocked_numbers", // table
@@ -310,10 +318,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     public void insertMessage(){}
     
-    public void getAllNumbers() {
+    /*public List<Message> getAllBlockedNumbers() {
  
+    	List<Message> dataList = new ArrayList<Message>();
         // 1. build the query
-        String query = "SELECT  * FROM blocked_numbers";
+        String query = "SELECT  * FROM blocked_messages";
  
         // 2. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
@@ -322,12 +331,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // 3. go over each row, build book and add it to list
         if (cursor.moveToFirst()) {
             do {
+            	Message data = new Message();
+            	data.setNumber(cursor.getString(0));
+            	data.setMessage(cursor.getString(1));
+            	data.setDate(cursor.getString(2));
+            	dataList.add(data);
             	Log.d("getNumbers()", cursor.getString(0));
 
             } while (cursor.moveToNext());
         }
  
+        return dataList;
+    }*/
+    public List<Message> getAllBlockedMessages() {
+    	 
+    	List<Message> dataList = new ArrayList<Message>();
+        // 1. build the query
+        String query = "SELECT * FROM blocked_messages Group By number ORDER BY date DESC";
  
+        // 2. get reference to writable DB
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+ 
+        // 3. go over each row, build book and add it to list
+        if (cursor.moveToFirst()) {
+            do {
+            	Message data = new Message();
+            	data.setNumber(cursor.getString(0));
+            	data.setMessage(cursor.getString(1));
+            	data.setDate(cursor.getString(2));
+            	dataList.add(data);
+            	Log.d("getNumbers()", cursor.getString(0));
+
+            } while (cursor.moveToNext());
+        }
+ 
+        return dataList;
     }
     
     
@@ -353,7 +392,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return "2011-08-20T18:02:52.249Z";
     }
-    
+    public void insertNewBlockedMessage(String Message, String number){
+    	 SQLiteDatabase db = this.getWritableDatabase();
+    	 String number_hash = sha1(number);
+    	 String timeStamp = new SimpleDateFormat("yyyy/MM/dd/ HH:mm:ss").format(Calendar.getInstance().getTime());
+    	 String query = "INSERT INTO blocked_messages ('number','message','date') VALUES('"+number+"','" +Message +"','"+timeStamp +"');";
+    	 //String query  = "UPDATE blocked_messages SET 'message' = '" + Message + "','date' = '"+ timeStamp +"' WHERE 'number' = '" + number_hash +"';";
+    	 db.execSQL(query); 	
+    }
     /**/
 }
 	

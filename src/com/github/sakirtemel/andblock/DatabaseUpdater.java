@@ -52,7 +52,7 @@ public class DatabaseUpdater {
             HttpClient httpclient = new DefaultHttpClient();
  
             // make GET request to the given URL
-            String last_updated = "2011-08-21T18:02:52.249Z";
+             String last_updated = "2011-08-21T18:02:52.249Z";
             
             DatabaseHelper db = DatabaseHelper.getInstance(context);
 			

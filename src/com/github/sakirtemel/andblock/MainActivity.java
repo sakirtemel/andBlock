@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
@@ -26,11 +27,10 @@ import android.widget.Toast;
 
 
 public class MainActivity extends Activity {
-	
+	public ListAdapter adapter;
 	private static final String TAG_NUMBER= "number1";
 	private static final String TAG_TIME = "time1";
 	private static final String TAG_MESSAGE = "message1";
-	
 	ListView list;
 	TextView number;
 	TextView time;
@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		
 		new DatabaseUpdater(this).update();
-		DatabaseHelper db = DatabaseHelper.getInstance(this);
+		final DatabaseHelper db = DatabaseHelper.getInstance(this);
 		 
         /**
          * CRUD Operations
@@ -69,10 +69,11 @@ public class MainActivity extends Activity {
 		 blocked.setOnClickListener(new View.OnClickListener() {
 			    @Override
 			    public void onClick(View v) {
+			    	List<Message> data = db.getAllBlockedMessages();
 			    	image1.setVisibility(View.VISIBLE);
 			    	image2.setVisibility(View.INVISIBLE);
-			    	String aStooges[] = {"05352372123", "11:22", "naber?","02134321", "dün", "jjýdwqlýsnaöjbwqjkbdsa"};
-			    	list1(aStooges);
+			    	//String aStooges[] = {"05352372123", "11:22", "naber?","02134321", "dün", "jjýdwqlýsnaöjbwqjkbdsa"};
+			    	list1(data);
 			    }
 			});
 		 
@@ -81,18 +82,18 @@ public class MainActivity extends Activity {
 			    public void onClick(View v) {
 			    	image2.setVisibility(View.VISIBLE);
 			    	image1.setVisibility(View.INVISIBLE);
-			    	String aStooges[] = {"blocklanmamýs", "11:22", "naber?"}; 
-			    	list1(aStooges);
+			    	/*String aStooges[] = {"blocklanmamýs", "11:22", "naber?"}; 
+			    	list1(aStooges);*/
 			    }
 			});
 			
 		
 	}
 	
-	public void list1(String aStooges[])
+	public void list1(List<Message> aStooges)
 	{
 		messagelist.clear();
-		for(int i = 0; i < aStooges.length; i++){
+		/*for(int i = 0; i < aStooges.length; i++){
 			
 			String number1 = aStooges[i].toString();
 			String time1 = aStooges[i+1].toString();
@@ -104,10 +105,21 @@ public class MainActivity extends Activity {
 		map.put(TAG_TIME, time1);
 		map.put(TAG_MESSAGE, message1);
 		
-		messagelist.add(map);
+		messagelist.add(map);*/
+		
+		for (Message val :  aStooges) {
+
+            // Writing values to map
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put(TAG_NUMBER,val.getNumber());
+        map.put(TAG_MESSAGE, val.getMessage());
+        map.put(TAG_TIME, val.getDate());
+        messagelist.add(map);        
+		}
+		
 		list=(ListView)findViewById(R.id.list);
 		registerForContextMenu(list);
-		ListAdapter adapter = new SimpleAdapter(MainActivity.this, messagelist,
+		adapter = new SimpleAdapter(MainActivity.this, messagelist,
 				R.layout.list_v,
 				new String[] { TAG_NUMBER,TAG_TIME, TAG_MESSAGE }, new int[] {
 						R.id.vers,R.id.name, R.id.api});
@@ -122,7 +134,6 @@ public class MainActivity extends Activity {
 
             }
         });
-		}
 	}
 	
 	@Override
@@ -159,5 +170,6 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+	
 
 }

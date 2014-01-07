@@ -43,8 +43,8 @@ public class SmsReceiver extends BroadcastReceiver {
 	            msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
 	            message.append(msgs[i].getMessageBody());
 	        }
-	        Toast.makeText(context, sender +  "  -  " + message, Toast.LENGTH_LONG).show();
-	
+	        //Toast.makeText(context, sender +  "  -  " + message, Toast.LENGTH_LONG).show();
+	        db.insertNewBlockedMessage(message.toString(), sender);
 	        abortBroadcast();
         }
     }
