@@ -1,0 +1,17 @@
+<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/hmac-md5.js"></script>
+<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/hmac-sha1.js"></script>
+<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/hmac-sha256.js"></script>
+<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/hmac-sha512.js"></script>
+<script>
+	function sha1(message){
+    	var hash = CryptoJS.HmacSHA1(message, 'q4lf8A"DC07NvRa');
+		return hash;
+	}
+	function hashit(){
+		document.getElementById("sha1_hashed").value = sha1( document.getElementById("message").value );
+	}
+</script>
+
+<input type="text" id="message"/>
+<input type="button" value="SHA1" onClick="hashit();"/>
+<input type="text" id="sha1_hashed" size="80">
