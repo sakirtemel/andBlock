@@ -6,7 +6,7 @@ public class Message {
 	String _date;
 	
 	public Message(){
-		
+		//
     }
 	
 	public String getNumber(){
