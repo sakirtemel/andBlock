@@ -19,18 +19,22 @@
 	    android:id="@+id/vers"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
+	    android:textStyle="bold"
+	    android:textSize="15sp"
 	   />
 
     <TextView
         android:id="@+id/name"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="12sp"
         />
 
     <TextView
         android:id="@+id/api"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="11sp"
         />
 </LinearLayout>
 </LinearLayout>
