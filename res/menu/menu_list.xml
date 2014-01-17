@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
      <!-- android:icon="@android:drawable/ic_menu_add" -->
-    <item android:id="@+id/add" 			
-              android:title="add" />
-      <item android:id="@+id/edit"          
-              android:title="edit" />
-
-       <item android:id="@+id/delete"          
-             android:title="delete" />
+       <item android:id="@+id/block" android:title="block"></item>
 </menu>

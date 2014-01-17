@@ -30,7 +30,7 @@
         android:layout_height="50dp"
         android:layout_marginLeft="140dp"
         android:background="#8D1318"
-        android:text="Un Blocked"
+        android:text="Unblocked"
         android:textColor="@layout/button_dark" />
 
     <ImageView

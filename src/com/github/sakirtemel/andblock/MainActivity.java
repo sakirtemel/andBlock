@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -40,6 +44,8 @@ public class MainActivity extends Activity {
 	ImageView image1;
 	ImageView image2;
 	
+	DatabaseUpdater updater;
+	
 	ArrayList<HashMap<String, String>> messagelist = new ArrayList<HashMap<String, String>>();
 	
 	@Override
@@ -47,7 +53,9 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		new DatabaseUpdater(this).update();
+		updater = new DatabaseUpdater(this);
+		updater.update();
+		
 		final DatabaseHelper db = DatabaseHelper.getInstance(this);
 		 
         /**
@@ -84,11 +92,52 @@ public class MainActivity extends Activity {
 			    	image1.setVisibility(View.INVISIBLE);
 			    	/*String aStooges[] = {"blocklanmamýs", "11:22", "naber?"}; 
 			    	list1(aStooges);*/
+			    	List<Message> data = getUnblockedMessages();
+			    	list1(data);
 			    }
 			});
 			
 		
 	}
+	
+	
+	public List<Message> getUnblockedMessages() {
+   	 
+    	List<Message> dataList = new ArrayList<Message>();
+    	
+    	
+    	
+    	
+    	Uri uri = Uri.parse("content://sms/inbox");
+        Cursor c= getContentResolver().query(uri, null, null ,null,null);
+        startManagingCursor(c);
+         
+        // Read the sms data and store it in the list
+        if(c.moveToFirst()) {
+            for(int i=0; i < c.getCount(); i++) {
+            	
+            	
+            	
+            	
+            	Message data = new Message();
+	           	data.setNumber( c.getString(c.getColumnIndexOrThrow("address")).toString() );
+	           	data.setMessage(  c.getString(c.getColumnIndexOrThrow("body")).toString() );
+	           	data.setDate(  c.getString(c.getColumnIndexOrThrow("date")).toString() );
+	           	dataList.add(data);
+
+                 
+                c.moveToNext();
+            }
+        }
+        c.close();
+         
+    	
+    	
+    	
+    	
+ 
+        return dataList;
+    }
 	
 	public void list1(List<Message> aStooges)
 	{
@@ -130,7 +179,7 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Toast.makeText(MainActivity.this, "You Clicked at "+messagelist.get(+position).get("number1"), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "You Clicked at "+messagelist.get(+position).get("number1"), Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -150,15 +199,11 @@ public class MainActivity extends Activity {
 	      AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 	      int position = info.position; // listview item Position
 	      switch(item.getItemId()) {
-	         case R.id.add:
-	         // add stuff here	        	 
-	            return true;
-	          case R.id.edit:
-	            // edit stuff here
-	                return true;
-	          case R.id.delete:
-	        // remove stuff here
-	                return true;
+	         case R.id.block:
+	         // add stuff here	
+	        	blockMessage( messagelist.get(+position).get("number1"), messagelist.get(+position).get("message1") );
+	        	return true;
+
 	          default:
 	                return super.onContextItemSelected(item);
 	      }
@@ -170,6 +215,12 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+	public void blockMessage(String number, String message){
+		updater.push_number = number;
+		updater.push_message = message;
+		updater.update();
+		
+        Toast.makeText(MainActivity.this, "You Clicked at " + number + ",," + message, Toast.LENGTH_SHORT).show();
+	}
 
 }

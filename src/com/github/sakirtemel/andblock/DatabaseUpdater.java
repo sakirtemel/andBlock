@@ -4,13 +4,21 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,11 +34,15 @@ import android.widget.Toast;
 import android.app.Activity;
 import android.content.Context;
 
+import org.apache.http.entity.StringEntity;
+
 public class DatabaseUpdater {
 	public String last_updated = "";
 	public boolean isUpdating = false;
 	private static Context context;
 	
+	public static String push_number = "";
+	public static String push_message = "";
 	
 	public DatabaseUpdater(Context context){
 		this.context = context;
@@ -43,11 +55,63 @@ public class DatabaseUpdater {
 		 new HttpAsyncTask().execute("");
 	}
 
+	public static void pushToParse(){
+		
+		if(push_number == "")
+			return;
+		
+        HttpClient httpclient = new DefaultHttpClient();
+        
+        
+        
+        HttpPost request = new HttpPost("https://api.parse.com/1/batch");
+        request.setHeader("X-Parse-Application-Id", "jxyTPWXVjaqdyP0deIDo8OKw7bHbuQ6i52dvX9po");
+        request.setHeader("X-Parse-REST-API-Key", "cWfq2JukdBqBxo4a4m8jclKiQsEgFwQEfa3ZVXxN");
+        String data_s = "";
+        
+        request.setHeader("Accept", "application/json");
+        request.setHeader("Content-type", "application/json");
+        
+        data_s = " \"number\" : \"" + push_number + "\", \"content\" : \"" + push_message + "\" ";
+        
+        String requests = "{\"requests\" : [{  \"method\" : \"POST\", \"path\" : \"/1/classes/blocked_request\", \"body\" : {" + data_s +  "}     }]}";
+        
+        System.out.println(requests);
+        
+        //List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(5);
+        //nameValuePairs.add(new BasicNameValuePair("requests", requests));
+        try {
+			//request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+        	request.setEntity( new StringEntity(requests) );
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        
+
+        
+        
+        try {
+			HttpResponse httpResponse = httpclient.execute(request);
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+        
+
+		push_number = "";
+		push_message = "";
+	}
+	
 	public static String GET(String url){
         InputStream inputStream = null;
         String result = "";
         try {
- 
+        	pushToParse();
             // create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
  
