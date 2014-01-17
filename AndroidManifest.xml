@@ -38,7 +38,8 @@
             android:name="com.github.sakirtemel.andblock.MainActivity"
             android:label="@string/title_activity_splash"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
+            android:theme="@android:style/Theme.Black.NoTitleBar"
+            android:exported="true" >
         </activity>
     </application>
 

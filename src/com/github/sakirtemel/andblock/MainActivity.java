@@ -109,32 +109,23 @@ public class MainActivity extends Activity {
     	
     	
     	Uri uri = Uri.parse("content://sms/inbox");
-        Cursor c= getContentResolver().query(uri, null, null ,null,null);
+        Cursor c = getContentResolver().query(uri, null, null ,null,null);
         startManagingCursor(c);
          
         // Read the sms data and store it in the list
         if(c.moveToFirst()) {
             for(int i=0; i < c.getCount(); i++) {
             	
-            	
-            	
-            	
             	Message data = new Message();
 	           	data.setNumber( c.getString(c.getColumnIndexOrThrow("address")).toString() );
 	           	data.setMessage(  c.getString(c.getColumnIndexOrThrow("body")).toString() );
 	           	data.setDate(  c.getString(c.getColumnIndexOrThrow("date")).toString() );
 	           	dataList.add(data);
-
                  
                 c.moveToNext();
             }
         }
         c.close();
-         
-    	
-    	
-    	
-    	
  
         return dataList;
     }
@@ -191,6 +182,7 @@ public class MainActivity extends Activity {
 	      if (v.getId()==R.id.list) {
 	          MenuInflater inflater = getMenuInflater();
 	          inflater.inflate(R.menu.menu_list, menu);
+	          
 	      }
 	}
 	
@@ -198,6 +190,9 @@ public class MainActivity extends Activity {
 	public boolean onContextItemSelected(MenuItem item) {
 	      AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 	      int position = info.position; // listview item Position
+	      View wantedView = list.getChildAt(position);
+	      TextView text = (TextView) wantedView.findViewById(R.id.vers);
+	      String Number4 = (String)text.getText();
 	      switch(item.getItemId()) {
 	         case R.id.block:
 	         // add stuff here	
