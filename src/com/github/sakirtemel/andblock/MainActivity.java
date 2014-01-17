@@ -7,8 +7,10 @@ import java.util.List;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -43,7 +45,7 @@ public class MainActivity extends Activity {
 	Button unblocked;
 	ImageView image1;
 	ImageView image2;
-	
+	ImageView imageListview;
 	DatabaseUpdater updater;
 	
 	ArrayList<HashMap<String, String>> messagelist = new ArrayList<HashMap<String, String>>();
@@ -73,6 +75,7 @@ public class MainActivity extends Activity {
 		 unblocked = (Button)findViewById(R.id.btnUnblocked);
 		 image1 = (ImageView)findViewById(R.id.imageView3);
 		 image2 = (ImageView)findViewById(R.id.imageView4);
+		 imageListview = (ImageView)findViewById(R.id.img);
 		 
 		 blocked.setOnClickListener(new View.OnClickListener() {
 			    @Override
